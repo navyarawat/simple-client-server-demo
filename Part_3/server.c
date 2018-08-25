@@ -8,13 +8,14 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <stdlib.h>
-
+#include <dirent.h>
 int main(){
   int welcomeSocket, newSocket;
   char buffer[1024];
   struct sockaddr_in serverAddr;
   struct sockaddr_storage serverStorage;
   socklen_t addr_size;
+  struct dirent *de;
 
   /*---- Create the socket. The three arguments are: ----*/
   /* 1) Internet domain 2) Stream socket 3) Default protocol (TCP in this case) */
@@ -40,21 +41,45 @@ int main(){
     printf("Error\n");
   
   while(1) {
+	  char * buff = 0;
+	  long length;
   	/*---- Accept call creates a new socket for the incoming connection ----*/
   	addr_size = sizeof serverStorage;
   	newSocket = accept(welcomeSocket, (struct sockaddr *) &serverStorage, &addr_size);
 	
 	/*---Accept input from client---*/
-	recv(newSocket, buffer, 1024, 0);
-	printf("Message Recieved: %s\n", buffer);
-	int len = strlen(buffer);
-	
-	/*---Change the string---*/
-	for(int i = 0; i < len; i++)
-		buffer[i] = tolower(buffer[i]);
+	recv(newSocket, buffer, 12, 0);
+	printf("Received the file name: %s \n", buffer);
   	
+	//DIR *dr = opendir("/usr/local/src/simple-client-server-demo/Part_3");
+	//if (dr == NULL) {
+	//	printf("Could not open the directory");
+	//	return 0;
+	//}
+	FILE *fptr;
+	fptr = fopen("webpage.html", "r");
+	if(fptr == NULL) {
+		printf("cannot open file \n");
+		exit(0);
+	}
+	//char ch = fgetc(fptr);
+	//while(ch != EOF) {
+	//	printf("%c", ch);
+	//	ch = fgetc(fptr);
+	//}
+	else {
+		fseek(fptr,0, SEEK_END);
+		length = ftell(fptr);
+		fseek (fptr, 0, SEEK_SET);
+		buff = malloc(length);
+		if (buff) {
+			fread(buff, 1, length, fptr);
+		}
+		fclose(fptr);
+	}
+	
 	/*---- Send message to the socket of the incoming connection ----*/
-  	send(newSocket,buffer,len,0);
+  	send(newSocket,buff,length,0);
   }
   return 0;
 }

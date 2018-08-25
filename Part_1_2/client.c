@@ -42,7 +42,7 @@ int main(){
 
   /*---- Print the received message ----*/
 
-  printf("Data received: %s \n",buffer);
+  printf("Data received: %s\n",buffer);
 
   return 0;
 }

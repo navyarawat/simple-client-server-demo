@@ -43,9 +43,10 @@ int main(){
   	/*---- Accept call creates a new socket for the incoming connection ----*/
   	addr_size = sizeof serverStorage;
   	newSocket = accept(welcomeSocket, (struct sockaddr *) &serverStorage, &addr_size);
-	
+	printf("HI");	
 	/*---Accept input from client---*/
 	recv(newSocket, buffer, 1024, 0);
+	printf("hello");
 	printf("Message Recieved: %s\n", buffer);
 	int len = strlen(buffer);
 	
@@ -54,7 +55,10 @@ int main(){
 		buffer[i] = tolower(buffer[i]);
   	
 	/*---- Send message to the socket of the incoming connection ----*/
-  	send(newSocket,buffer,len,0);
+  	printf("String sent: %s\n", buffer);
+	send(newSocket,buffer,len,0);
+	for(int i = 0; i < len; i++)
+		buffer[i]=0;	
   }
   return 0;
 }

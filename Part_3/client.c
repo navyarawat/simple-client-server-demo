@@ -34,11 +34,14 @@ int main(){
   connect(clientSocket, (struct sockaddr *) &serverAddr, addr_size);
   
   /*---Send message to server---*/
-  printf("Enter message:");
+  printf("Enter file name:");
   scanf("%s", buffer);
   send(clientSocket, buffer, strlen(buffer), 0);
   /*---- Read the message from the server into the buffer ----*/
   recv(clientSocket, buffer, 1024, 0);
+  FILE *fptr = fopen("clientwebpage.html", "w");
+  fputs(buffer, fptr);
+  fclose(fptr);
 
   /*---- Print the received message ----*/
 
