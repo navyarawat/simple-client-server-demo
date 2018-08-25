@@ -1,13 +1,13 @@
 /* credit @Daniel Scocco */
 
 /****************** SERVER CODE ****************/
-
+#include <ctype.h>
 #include <stdio.h>
 #include <netinet/in.h>
 #include <string.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-
+#include <stdlib.h>
 
 int main(){
   int welcomeSocket, newSocket;
@@ -38,15 +38,23 @@ int main(){
     printf("I'm listening\n");
   else
     printf("Error\n");
-
-  /*---- Accept call creates a new socket for the incoming connection ----*/
-  addr_size = sizeof serverStorage;
-  newSocket = accept(welcomeSocket, (struct sockaddr *) &serverStorage, &addr_size);
-
-  /*---- Send message to the socket of the incoming connection ----*/
-
-  strcpy(buffer,"Hello World\n");
-  send(newSocket,buffer,13,0);
-
+  
+  while(1) {
+  	/*---- Accept call creates a new socket for the incoming connection ----*/
+  	addr_size = sizeof serverStorage;
+  	newSocket = accept(welcomeSocket, (struct sockaddr *) &serverStorage, &addr_size);
+	
+	/*---Accept input from client---*/
+	recv(newSocket, buffer, 1024, 0);
+	printf("Message Recieved: %s\n", buffer);
+	int len = strlen(buffer);
+	
+	/*---Change the string---*/
+	for(int i = 0; i < len; i++)
+		buffer[i] = tolower(buffer[i]);
+  	
+	/*---- Send message to the socket of the incoming connection ----*/
+  	send(newSocket,buffer,len,0);
+  }
   return 0;
 }

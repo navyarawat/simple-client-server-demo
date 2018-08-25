@@ -32,13 +32,17 @@ int main(){
   /*---- Connect the socket to the server using the address struct ----*/
   addr_size = sizeof serverAddr;
   connect(clientSocket, (struct sockaddr *) &serverAddr, addr_size);
-
+  
+  /*---Send message to server---*/
+  printf("Enter message:");
+  scanf("%s", buffer);
+  send(clientSocket, buffer, strlen(buffer), 0);
   /*---- Read the message from the server into the buffer ----*/
   recv(clientSocket, buffer, 1024, 0);
 
   /*---- Print the received message ----*/
 
-  printf("Data received: %s",buffer);
+  printf("Data received: %s \n",buffer);
 
   return 0;
 }
